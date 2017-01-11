@@ -21,10 +21,12 @@ gulp.task('serve', ['styles', 'scripts'], function() {
     });
 
     gulp.watch('src/sass/**/*.scss', ['styles']).on('change', browserSync.reload);
-    gulp.watch('src/js/*.js', ['scripts']);
+    gulp.watch('src/js/**/*.js', ['scripts']);
   	gulp.watch('*.html').on('change', browserSync.reload);
   	gulp.watch('src/sass/**/*.scss').on('change', browserSync.reload);
-    gulp.watch('src/js/*.js').on('change', browserSync.reload);
+    gulp.watch('src/js/**/*.js').on('change', browserSync.reload);
+    gulp.watch('src/img/*.jpg', ['imgoptim']).on('change', browserSync.reload);
+    gulp.watch('src/img/*.jpg').on('change', browserSync.reload);
 });
 
 gulp.task('styles', function() {
@@ -41,10 +43,10 @@ gulp.task('styles', function() {
 
 gulp.task('scripts', function() {
   return gulp.src([
-        'src/js/*.js'
+        'src/js/**/*.js'
     ])
     .pipe(concat('script.js'))
-    .pipe(uglify())
+   // .pipe(uglify())
     .pipe(gulp.dest('dest/js/'))
 });
 
