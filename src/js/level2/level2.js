@@ -1,5 +1,10 @@
-console.log('in preload');
+console.log('in level 2');
 
+var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
+    preload: preload,
+    create: create,
+    update: update
+});
 function preload() {
 
     game.load.baseURL = 'http://examples.phaser.io/assets/';
@@ -10,12 +15,6 @@ function preload() {
     game.load.image('email', 'dest/img/yahoo.jpg');
 
 }
-
-var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
-    preload: preload,
-    create: create,
-    update: update
-});
 
 var player;
 var bullets;
