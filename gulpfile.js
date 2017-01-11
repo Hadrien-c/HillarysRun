@@ -46,7 +46,7 @@ gulp.task('scripts', function() {
         'src/js/**/*.js'
     ])
     .pipe(concat('script.js'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(gulp.dest('dest/js/'))
 });
 
