@@ -9,7 +9,7 @@ var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
         game.load.image('platform', 'src/img/platform.png');
         game.load.image('star', 'src/img/star.png');
         game.load.image('sol', 'src/img/sol.png')
-        game.load.image('bg', 'src/img/background.svg');
+        game.load.image('bg', 'src/img/Landing-Backgroundlvl1.jpg');
         
 
         game.load.spritesheet('dude', 'src/img/dude.png', 32, 48); // ??????
@@ -19,6 +19,7 @@ var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
     var platforms;
     var score = 0;
     var scoreText;
+    var cursors;
 
     function create() {
         // creation platform
@@ -28,12 +29,11 @@ var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
             // On rend actif Arcade Physics qui nous permet de mettre en place les règles physique
         game.physics.startSystem(Phaser.Physics.ARCADE);
         var bg = game.add.sprite(0, 0, 'bg');
+        game.world.setBounds(0, 0, 0, 2000);
         // On crée le fond du monde (ici le ciel)
         bg.height = game.height;
         bg.width = game.width;
-        // bg.scale.setTo(10,10);
-
-        test = game.add.sprite(200, 0, 'test');
+        bg.scale.setTo(0.5,0.5);
 
         // Le groupe contenant les platformes se compose du sol & de 2 plateformes sur lesquells on peu sauter
         platforms = game.add.group();
@@ -61,6 +61,11 @@ var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
         ledge.body.immovable = true;
 
         player = game.add.sprite(32, game.world.height - 850, 'dude');
+
+        //**************** TEST **********************//
+        game.camera.follow(player);
+        cursors = game.input.keyboard.createCursorKeys();
+
 
         //  We need to enable physics on the player
         game.physics.arcade.enable(player);
@@ -101,6 +106,7 @@ var game = new Phaser.Game(1680, 926, Phaser.AUTO, '', {
             fill: '#fff',
             background: '#000'
         });
+
 
 
     }
