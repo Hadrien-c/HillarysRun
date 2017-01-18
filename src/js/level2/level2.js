@@ -1,6 +1,6 @@
 console.log('in level 2');
 
-var level2 = new Phaser.Game(1080, 926, Phaser.AUTO, '', {
+var level2 = new Phaser.Game(1080, 726, Phaser.AUTO, '', {
     preload: preload,
     create: create,
     update: update
@@ -11,9 +11,11 @@ function preload() {
     level2.load.baseURL = '../../';
     level2.load.crossOrigin = 'anonymous';
 
+    level2.load.image('sky', 'dest/img/sky.png');
     level2.load.image('hil', 'dest/img/hil.jpg');
     level2.load.image('email', 'dest/img/yahoo.png');
     level2.load.image('fireBullet', 'dest/img/fire.png');
+    level2.load.image('ground', 'dest/img/ground.png');
 
 }
 
@@ -27,10 +29,70 @@ var scorePlayer;
 var scoreFbi
 var score = 0;
 var scoreEnemy = 0;
+var platforms;
+var ground;
+var bkg;
 
 function create() {
 
+    level2.physics.startSystem(Phaser.Physics.ARCADE);
 
+    //Add bkg
+    var bkg = level2.add.sprite(0, 0, 'sky');
+    bkg.height = level2.height;
+    bkg.width = level2.width;
+    bkg.enableBody = true;
+    bkg.physicsBodyType = Phaser.Physics.ARCADE;
+    level2.physics.enable(bkg, Phaser.Physics.ARCADE);
+    bkg.body.collideWorldBounds = true;
+    bkg.body.checkCollision.left = true;
+    bkg.body.checkCollision.right = true;
+    bkg.body.immovable = true;
+
+    //Add ground
+    var ground = level2.add.sprite(0, 650, 'ground');
+    ground.height = 100;
+    ground.width = level2.width;
+    ground.enableBody = true;
+    ground.physicsBodyType = Phaser.Physics.ARCADE;
+    ground.name = 'ground';
+    level2.physics.enable(ground, Phaser.Physics.ARCADE);
+    ground.body.collideWorldBounds = true;
+    ground.body.checkCollision.up = true;
+    ground.body.checkCollision.down = true;
+    ground.body.immovable = true;
+
+    //Add Hillary;
+    player = level2.add.sprite(400, 570, 'hil');
+    player.width = 150;
+    player.height = 160;
+    player.enableBody = true;
+    player.name = 'player';
+    player.physicsBodyType = Phaser.Physics.ARCADE;
+    level2.physics.enable(player, Phaser.Physics.ARCADE);
+    player.body.collideWorldBounds = true;
+    player.body.checkCollision.left = true;
+    player.body.checkCollision.right = true;
+
+
+    //Add Emails
+    emails = level2.add.group();
+    emails.enableBody = true;
+    emails.physicsBodyType = Phaser.Physics.ARCADE;
+
+
+
+    sprite2 = level2.add.sprite(350, 400, 'fireBullet', 2);
+    sprite2.name = 'fireBullet';
+
+    level2.physics.enable(sprite2, Phaser.Physics.ARCADE);
+    sprite2.body.collideWorldBounds = true;
+    sprite2.body.bounce.setTo(1, 1);
+    sprite2.body.velocity.y = 200;
+
+
+
+    //Add bullets
     fire = level2.add.physicsGroup();
     fire.createMultiple(32, 'fireBullet', false);
     fire.setAll('checkWorldBounds', true);
@@ -39,20 +101,9 @@ function create() {
     fire.width = 10;
     fire.height = 10;
 
-    player = level2.add.sprite(400, 570, 'hil');
-    player.width = 150;
-    player.height = 160;
-    // player.enableBody = true;
-    // player.body.collideWorldBounds = true;
-
-    //Emails
-    emails = level2.add.group();
-    emails.enableBody = true;
-    emails.physicsBodyType = Phaser.Physics.ARCADE;
-
 
     //WTF ???
-    for (var y = 0; y < 10; y++) {
+    for (var y = 0; y < 2; y++) {
         for (var x = 0; x < 10; x++) {
             //Create falling emails
             var mail = emails.create(5 + x * 94, y * 10, 'email');
@@ -63,7 +114,7 @@ function create() {
         }
     }
 
-    level2.physics.arcade.enable(player);
+    // level2.physics.arcade.enable(player);
     level2.physics.arcade.enable(mail);
     mail.width = 150;
     mail.height = 150;
@@ -103,7 +154,8 @@ function update() {
 
     //Colistion between bullet and emails
     level2.physics.arcade.overlap(emails, fire, collectMail, null, this);
-
+    
+    level2.physics.arcade.overlap(ground, emails, fbiCollect, null, this);
 
     //Hillary collect emails
     function collectMail(fire, mail) {
@@ -128,6 +180,7 @@ function update() {
 
     //FBI collect 
     function fbiCollect() {
+        console.log('in fbi collect')
         // mail.kill();
         scoreEnemy += 10;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
@@ -145,6 +198,9 @@ function update() {
         }
 
     }
+
+    level2.physics.arcade.collide(ground, sprite2);
+    level2.physics.arcade.collide(bkg, sprite2);
 
 }
 
