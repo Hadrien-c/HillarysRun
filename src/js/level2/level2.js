@@ -33,6 +33,15 @@ var platforms;
 var ground;
 var bkg;
 
+
+
+// -------------------------------------------------
+// -------------------------------------------------
+// -----------------    CREATE   ----------------------
+// -------------------------------------------------
+// -------------------------------------------------
+
+
 function create() {
 
     level2.physics.startSystem(Phaser.Physics.ARCADE);
@@ -79,6 +88,11 @@ function create() {
     emails = level2.add.group();
     emails.enableBody = true;
     emails.physicsBodyType = Phaser.Physics.ARCADE;
+    // level2.body.checkCollision.down = true;
+
+    // if (level2.body.checkCollision.down) {
+    //     console.log('down 1')
+    // }
 
 
 
@@ -133,21 +147,38 @@ function create() {
         background: '#000'
     });
 
+    // mail.events.onOutOfBounds.add(fbiCollect, this);
+
     cursors = level2.input.keyboard.createCursorKeys();
     fireButton = level2.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 }
 
 
-//Generate emails
+//email doesn't take by Hillary
 function mailOut(mail) {
     mail.reset(mail.x, 0);
-    //Emails move X
-    mail.body.velocity.y = 50 + Math.random() * 200;
     //Emails move Y
-    // mail.body.velocity.x = 0 + Math.random() * 200;
+    mail.body.velocity.y = 100 + Math.random() * 200;
+    //Emails move X
+    // mail.body.velocity.x = 10 + Math.random() * 200;
+    scoreEnemy += 10;
+    scoreFbi.text = 'Score FBI : ' + scoreEnemy;
 
 }
+// function fbiCollect(ground, mail) {
+//     console.log('in fbi collect')
+//     mail.kill();
+//     scoreEnemy += 10;
+//     scoreFbi.text = 'Score FBI : ' + scoreEnemy;
+// }
+
+
+// -------------------------------------------------
+// -------------------------------------------------
+// -----------------    UPDATE   ----------------------
+// -------------------------------------------------
+// -------------------------------------------------
 
 
 function update() {
@@ -156,6 +187,7 @@ function update() {
     level2.physics.arcade.overlap(emails, fire, collectMail, null, this);
     
     level2.physics.arcade.overlap(ground, emails, fbiCollect, null, this);
+
 
     //Hillary collect emails
     function collectMail(fire, mail) {
@@ -173,15 +205,20 @@ function update() {
         player.body.velocity.x = 600;
     }
 
+
+    //  if (Math.abs(emails.body.velocity.x) < 1 && Math.abs(emails.body.velocity.y) < 1) {
+    //      alert("ball stopped moving");
+    // }
+
     //Shot's command
     if (fireButton.isDown) {
         fireBullet();
     }
 
     //FBI collect 
-    function fbiCollect() {
+    function fbiCollect(ground, mail) {
         console.log('in fbi collect')
-        // mail.kill();
+        mail.kill();
         scoreEnemy += 10;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
@@ -198,6 +235,7 @@ function update() {
         }
 
     }
+
 
     level2.physics.arcade.collide(ground, sprite2);
     level2.physics.arcade.collide(bkg, sprite2);
