@@ -155,7 +155,7 @@ function create() {
 }
 
 
-//email doesn't take by Hillary
+//Generate emails
 function mailOut(mail) {
     mail.reset(mail.x, 0);
     //Emails move Y
@@ -166,12 +166,6 @@ function mailOut(mail) {
     scoreFbi.text = 'Score FBI : ' + scoreEnemy;
 
 }
-// function fbiCollect(ground, mail) {
-//     console.log('in fbi collect')
-//     mail.kill();
-//     scoreEnemy += 10;
-//     scoreFbi.text = 'Score FBI : ' + scoreEnemy;
-// }
 
 
 // -------------------------------------------------
@@ -234,6 +228,10 @@ function update() {
             }
         }
 
+    }
+
+    if (scoreEnemy == 150) {
+        emails.kill();
     }
 
 
