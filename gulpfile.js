@@ -27,6 +27,8 @@ gulp.task('serve', ['styles', 'scripts'], function() {
     gulp.watch('src/js/**/*.js').on('change', browserSync.reload);
     gulp.watch('src/img/*.jpg', ['imgoptim']).on('change', browserSync.reload);
     gulp.watch('src/img/*.jpg').on('change', browserSync.reload);
+    gulp.watch('src/img/*.png', ['imgoptim']).on('change', browserSync.reload);
+    gulp.watch('src/img/*.png').on('change', browserSync.reload);
 });
 
 gulp.task('styles', function() {
