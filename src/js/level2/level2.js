@@ -18,8 +18,11 @@ function preload() {
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('fbi', 'dest/img/cops.png');
 
-}
+    level2.load.audio('fireSound', 'sounds/yes.wav');
 
+
+}
+ 
 var player;
 var fire;
 var cursors;
@@ -33,7 +36,7 @@ var scoreEnemy = 0;
 var platforms;
 var ground;
 var bkg;
-
+var fireSound;
 
 
 // -------------------------------------------------
@@ -109,30 +112,33 @@ function create() {
     emails = level2.add.group();
     emails.enableBody = true;
 
-    for (var y = 0; y < 5; y++) {
-    for (var x = 0; x < 10; x++) {
-        // y = 1;
-        //Create falling emails
-        var mail = emails.create(5 + x * 94, y * 10, 'email');
+    var xpos = Math.floor(Math.random()*99) + 1; // Get a number between 1 and 99;
+    xpos *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
 
-        mail.width = 50;
-        mail.height = 40;
+    for (var y = 0; y < 2; y++) {
+        for (var x = 0; x < 100; x++) {
+            // y = 1;
+            //Create falling emails
+            var mail = emails.create(5 + x * 9, 1 /*y * 10*/, 'email');
 
-        mail.name = 'mail' + x.toString() + y.toString(); // ??
+            mail.width = 50;
+            mail.height = 40;
 
-        mail.checkWorldBounds = true;
-        mail.events.onOutOfBounds.add(mailOut, this);
-        mail.body.velocity.y = 150 + Math.random() * 200;
+            mail.name = 'mail' + x.toString() + y.toString(); // ??
 
+            mail.checkWorldBounds = true;
+            mail.events.onOutOfBounds.add(mailOut, this);
+            mail.body.velocity.y = 200 + Math.random() * 200;
+
+        }
     }
-    }
 
-    // level2.physics.arcade.enable(player);
+    //Add fire sound
+    fireSound = level2.add.audio('fireSound');
+
+    level2.physics.arcade.enable(player);
     level2.physics.arcade.enable(mail);
-    mail.width = 150;
-    mail.height = 150;
-
-
+    // level2.sound.setDecodedCallback([fireSound], start, this);
 
     // sprite2 = level2.add.sprite(350, 400, 'fireBullet', 2);
     // sprite2.name = 'fireBullet';
@@ -174,12 +180,18 @@ function create() {
 
 
 //Generate emails
+
+
 function mailOut(mail) {
     mail.reset(mail.x, 0);
+
     //Emails move Y
     mail.body.velocity.y = 100 + Math.random() * 200;
     //Emails move X
-    // mail.body.velocity.x = 10 + Math.random() * 200;
+    var num = Math.floor(Math.random()*99) + 1; // Get a number between 1 and 99;
+    num *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
+    mail.body.velocity.x = num;
+
     // scoreEnemy += 10;
     scoreFbi.text = 'Score FBI : ' + scoreEnemy;
 
@@ -199,14 +211,14 @@ function update() {
     level2.physics.arcade.overlap(emails, fire, collectMail, null, this);
     //Collision between emails and ground
     level2.physics.arcade.overlap(fbi, emails, fbiCollect, null, this);
+    level2.physics.arcade.overlap(fbi, fire, fireOnFbi, null, this);
 
 
     //Hillary collect emails
     function collectMail(fire, mail) {
-        console.log('in collect mail');
         mail.kill();
         fire.kill();
-        score += 10;
+        score += 13;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -221,13 +233,14 @@ function update() {
     //Shot's command
     if (fireButton.isDown) {
         fireBullet();
+        fireSound.play();
+
     }
 
     //FBI collect 
     function fbiCollect(fbiCar, mail) {
-        console.log('in fbi collect')
         mail.kill();
-        scoreEnemy += 10;
+        scoreEnemy += 8;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
@@ -241,17 +254,22 @@ function update() {
                 bulletTime = level2.time.time + 100;
             }
         }
+    }
 
+    function fireOnFbi (fbiCar, fire) {
+        // fire.kill();
+        fbiCar.body.velocity.x * 5;
     }
 
     function gameOver() {
-        if (scoreEnemy == 150) {
+        if (scoreEnemy = 100) {
+            console.log('in gme over')
             emails.kill();
         }
     }
 
 
-    level2.physics.arcade.collide(ground, emails);
+
     // level2.physics.arcade.collide(bkg, sprite2);
     level2.physics.arcade.collide(bkg, fbi);
 
