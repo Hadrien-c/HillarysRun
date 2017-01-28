@@ -18,7 +18,10 @@ function preload() {
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('fbi', 'dest/img/cops.png');
 
-    level2.load.audio('fireSound', 'sounds/yes.wav');
+    level2.load.audio('fireSound', 'sounds/fireSound2.wav');
+    level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
+    level2.load.audio('copsSound', 'sounds/copsSound.wav');
+    level2.load.audio('explo', 'sounds/explo.wav');
 
 
 }
@@ -37,6 +40,9 @@ var platforms;
 var ground;
 var bkg;
 var fireSound;
+var copsSound;
+var emailKilled;
+var explo;
 
 
 // -------------------------------------------------
@@ -102,7 +108,7 @@ function create() {
     fbiCar.body.velocity.x = 550 + Math.random() * 200;
 
     fbiCar.physicsBodyType = Phaser.Physics.ARCADE;
-    fbiCar.body.checkCollision.right = true;
+    // fbiCar.body.checkCollision.right = true;
     level2.physics.enable(fbiCar, Phaser.Physics.ARCADE);
     fbiCar.body.collideWorldBounds = true;
     fbiCar.body.bounce.setTo(1, 1);
@@ -115,30 +121,31 @@ function create() {
     var xpos = Math.floor(Math.random()*99) + 1; // Get a number between 1 and 99;
     xpos *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
 
-    for (var y = 0; y < 2; y++) {
+    // for (var y = 0; y < 2; y++) {
         for (var x = 0; x < 100; x++) {
-            // y = 1;
             //Create falling emails
             var mail = emails.create(5 + x * 9, 1 /*y * 10*/, 'email');
 
             mail.width = 50;
             mail.height = 40;
 
-            mail.name = 'mail' + x.toString() + y.toString(); // ??
+            // mail.name = 'mail' + x.toString() + y.toString(); // ??
 
             mail.checkWorldBounds = true;
             mail.events.onOutOfBounds.add(mailOut, this);
             mail.body.velocity.y = 200 + Math.random() * 200;
 
         }
-    }
+    // }
 
-    //Add fire sound
+    //Add sounds
     fireSound = level2.add.audio('fireSound');
+    emailKilled = level2.add.audio('emailKilled');
+    copsSound = level2.add.audio('copsSound');
+    explo = level2.add.audio('explo');
 
     level2.physics.arcade.enable(player);
     level2.physics.arcade.enable(mail);
-    // level2.sound.setDecodedCallback([fireSound], start, this);
 
     // sprite2 = level2.add.sprite(350, 400, 'fireBullet', 2);
     // sprite2.name = 'fireBullet';
@@ -188,13 +195,9 @@ function mailOut(mail) {
     //Emails move Y
     mail.body.velocity.y = 100 + Math.random() * 200;
     //Emails move X
-    var num = Math.floor(Math.random()*99) + 1; // Get a number between 1 and 99;
-    num *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
+    var num = Math.floor(Math.random()*99) + 1; 
+    num *= Math.floor(Math.random()*2) == 1 ? 1 : -1; 
     mail.body.velocity.x = num;
-
-    // scoreEnemy += 10;
-    scoreFbi.text = 'Score FBI : ' + scoreEnemy;
-
 }
 
 
@@ -218,7 +221,8 @@ function update() {
     function collectMail(fire, mail) {
         mail.kill();
         fire.kill();
-        score += 13;
+        emailKilled.play();
+        score += 12;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -240,7 +244,8 @@ function update() {
     //FBI collect 
     function fbiCollect(fbiCar, mail) {
         mail.kill();
-        scoreEnemy += 8;
+        copsSound.play();
+        scoreEnemy += 7;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
@@ -249,16 +254,20 @@ function update() {
         if (level2.time.time > bulletTime) {
             bullet = fire.getFirstExists(false);
             if (bullet) {
-                bullet.reset(player.x + 6, player.y - 12);
-                bullet.body.velocity.y = -600;
-                bulletTime = level2.time.time + 100;
+                bullet.reset(player.x + 56, player.y - 52);
+                bullet.body.velocity.y = -900;
+                bulletTime = level2.time.time + 70;
             }
         }
     }
 
     function fireOnFbi (fbiCar, fire) {
-        // fire.kill();
-        fbiCar.body.velocity.x * 5;
+        fire.kill();
+        explo.play();
+        var xvelo = Math.floor(Math.random()*99) + 1; 
+        // xvelo *= Math.floor(Math.random()) ;
+        
+        fbiCar.body.velocity.x = 10 + xvelo * 20 
     }
 
     function gameOver() {
