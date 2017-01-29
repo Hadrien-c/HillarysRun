@@ -124,7 +124,7 @@ function create() {
     // for (var y = 0; y < 2; y++) {
         for (var x = 0; x < 100; x++) {
             //Create falling emails
-            var mail = emails.create(5 + x * 9, 1 /*y * 10*/, 'email');
+            var mail = emails.create(5 + x * 10, 0 /*y * 10*/, 'email');
 
             mail.width = 50;
             mail.height = 40;
@@ -185,9 +185,11 @@ function create() {
 
 }
 
+function createEmails(mail) {
+    var mail = emails.create(5 + x * 10, 0 /*y * 10*/, 'email');
+}
 
 //Generate emails
-
 
 function mailOut(mail) {
     mail.reset(mail.x, 0);
@@ -222,7 +224,7 @@ function update() {
         mail.kill();
         fire.kill();
         emailKilled.play();
-        score += 12;
+        score += 11;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -245,7 +247,7 @@ function update() {
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         copsSound.play();
-        scoreEnemy += 7;
+        scoreEnemy += 9;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
