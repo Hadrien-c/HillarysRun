@@ -119,22 +119,22 @@ function create() {
 
     //Generate emails
     // for (var y = 0; y < 2; y++) {
-        for (var x = 0; x < 100; x++) {
+    // for (var x = 0; x < 100; x++) {
 
-            var mail = emails.create(level2.world.randomX, 0 , 'email');
-            mail.width = 50;
-            mail.height = 40;
-            // mail.name = 'mail' + x.toString() + y.toString(); // ??
-            mail.checkWorldBounds = true;
-            mail.events.onOutOfBounds.add(mailOut, this);
+    //     var mail = emails.create(level2.world.randomX, 0, 'email');
+    //     mail.width = 50;
+    //     mail.height = 40;
+    //     // mail.name = 'mail' + x.toString() + y.toString(); // ??
+    //     mail.checkWorldBounds = true;
+    //     mail.events.onOutOfBounds.add(mailOut, this);
 
-            var num = Math.random() * 500 + 200; // Get a number between 200 and 500;
-            mail.body.velocity.y = num;
-            var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
-            num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus 
-            mail.body.velocity.x = num;
+    //     var num = Math.random() * 500 + 200; // Get a number between 200 and 500;
+    //     mail.body.velocity.y = num;
+    //     var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
+    //     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus 
+    //     mail.body.velocity.x = num;
 
-        }
+    // }
     // }
 
 
@@ -145,7 +145,7 @@ function create() {
     explo = level2.add.audio('explo');
 
     level2.physics.arcade.enable(player);
-    level2.physics.arcade.enable(mail);
+    // level2.physics.arcade.enable(mail);
 
     // sprite2 = level2.add.sprite(350, 400, 'fireBullet', 2);
     // sprite2.name = 'fireBullet';
@@ -199,20 +199,32 @@ function mailOut(mail) {
     mail.body.velocity.x = num;
 }
 
-// function releasemail() {
+function createEmails(mail) {
+    var mail = emails.create(level2.world.randomX, 0, 'email');
+    mail.width = 50;
+    mail.height = 40;
+    // mail.name = 'mail' + x.toString() + y.toString(); // ??
+    mail.checkWorldBounds = true;
+    mail.events.onOutOfBounds.add(mailOut, this);
 
-//     var mail = level2.add.sprite(level2.world.randomY, -(Math.random() * 800), 'email');
-//     mail.height = 50;
-//     mail.width = 60;
+    var num = Math.random() * 500 + 200; // Get a number between 200 and 500;
+    mail.body.velocity.y = num;
+    var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
+    num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus 
+    mail.body.velocity.x = num;
+}
 
-//     // mail.enableBody = true;
-//     // mail.body.velocity.y = 100 + Math.random() * 200;
-//     level2.add.tween(mail).to({ y: level2.width + (1600 + mail.y) }, 20000, Phaser.Easing.Linear.None, true);
 
-//     total++;
-//     timer = level2.time.now + 100;
-
-// }
+function createFbi() {
+    var fbiCar = fbi.create(random, 500, 'fbi');
+    fbiCar.width = 90;
+    fbiCar.height = 60;
+    fbiCar.body.velocity.x = 550 + Math.random() * 200;
+    fbiCar.physicsBodyType = Phaser.Physics.ARCADE;
+    level2.physics.enable(fbiCar, Phaser.Physics.ARCADE);
+    fbiCar.body.collideWorldBounds = true;
+    fbiCar.body.bounce.setTo(1, 1);
+}
 
 // -------------------------------------------------
 // -------------------------------------------------
@@ -260,6 +272,21 @@ function update() {
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
+    function startGame(mail) {
+        if (score >= 1000) {
+            console.log('if')
+        } else if (scoreEnemy >= 1000) {
+            console.log('in enemy')
+        } else {
+            createEmails();
+            // level2.destroy();
+            // mail.kill()
+            console.log('else')
+        }
+    }
+    // createEmails();
+    startGame();
+
     //Hillary's shot
     function fireBullet() {
         if (level2.time.time > bulletTime) {
@@ -275,11 +302,15 @@ function update() {
     //Fire on FBI
     function fireOnFbi(fbiCar, fire) {
         fire.kill();
-        explo.play();
-        var xvelo = Math.floor(Math.random() * 99) + 40;
+        createFbi();
+        copsSound.play();
+
+        //Change speed
+        // explo.play();
+        // var xvelo = Math.floor(Math.random() * 99) + 40;
         // xvelo *= Math.floor(Math.random()) ;
 
-        fbiCar.body.velocity.x =  xvelo * 25;
+        // fbiCar.body.velocity.x = xvelo * 25;
     }
 
     level2.physics.arcade.collide(bkg, fbi);
