@@ -26,9 +26,8 @@ function preload() {
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
     level2.load.audio('copsSound', 'sounds/copsSound.wav');
     level2.load.audio('explo', 'sounds/explo.wav');
-
-
 }
+
 
 var player;
 var fire;
@@ -296,13 +295,13 @@ function update() {
             emails.destroy();
             player.destroy();
             fbi.destroy();
-            level2.state.start('gameOver');
+            // level2.state.start('gameOver');
 
         } else if (scoreEnemy >= 20) {
             emails.destroy();
             player.destroy();
             fbi.destroy();
-            level2.state.start('gameOver');
+            // level2.state.start('gameOver');
 
         }
     }
