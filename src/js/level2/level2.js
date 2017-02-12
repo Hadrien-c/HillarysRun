@@ -22,7 +22,7 @@ function preload() {
     level2.load.image('ground2', 'dest/img/ground2.png');
     level2.load.image('fbi', 'dest/img/fbi.png');
 
-    level2.load.audio('fireSound', 'sounds/fireSound2.wav');
+    // level2.load.audio('fireSound', 'sounds/fireSound2.wav');
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
     level2.load.audio('copsSound', 'sounds/copsSound.wav');
     level2.load.audio('explo', 'sounds/explo.wav');
@@ -75,7 +75,7 @@ function create() {
     bkg.body.immovable = true;
 
     //Add ground
-    var ground = level2.add.sprite(0, level2.height - 150, 'ground');
+    var ground = level2.add.sprite(0, level2.height - 20, 'ground');
     ground.height = 15;
     ground.width = level2.width;
     ground.enableBody = true;
@@ -110,14 +110,14 @@ function create() {
 
     //Add Hillary;
     player = level2.add.sprite(400, level2.height - 553, 'hil');
-    player.width = 130;
-    player.height = 160;
+    player.width = 194;
     player.enableBody = true;
     player.name = 'player';
     player.physicsBodyType = Phaser.Physics.ARCADE;
     level2.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;
     player.body.bounce.setTo(1, 1);
+    level2.physics.arcade.enable(player);
 
 
     //Add Emails
@@ -130,16 +130,13 @@ function create() {
     blockLeft.height = level2.height;
     blockLeft.width = 300;
     blockLeft.enableBody = true;
-    // blockLeft.physicsBodyType = Phaser.Physics.ARCADE;
     blockLeft.name = 'blockLeft';
     level2.physics.enable(blockLeft, Phaser.Physics.ARCADE);
     blockLeft.body.collideWorldBounds = true;
     blockLeft.checkWorldBounds = true; //To test
-
     blockLeft.body.checkCollision.left = true;
     blockLeft.body.checkCollision.right = true;
     blockLeft.body.immovable = true;
-
     
     //Add blocks Right
     blockRight = level2.add.sprite(window.innerWidth, 0, 'blockRight');
@@ -150,8 +147,6 @@ function create() {
     blockRight.name = 'blockRight';
     level2.physics.enable(blockRight, Phaser.Physics.ARCADE);
     blockRight.body.collideWorldBounds = true;
-    blockRight.checkWorldBounds = true; //To test
-
     blockRight.body.checkCollision.left = true;
     blockRight.body.checkCollision.right = true;
     blockRight.body.immovable = true;
@@ -163,25 +158,14 @@ function create() {
     copsSound = level2.add.audio('copsSound');
     explo = level2.add.audio('explo');
 
-    level2.physics.arcade.enable(player);
 
-    //Add bullets
-    fire = level2.add.physicsGroup();
-    fire.createMultiple(32, 'fireBullet', false);
-    fire.setAll('checkWorldBounds', true);
-    fire.setAll('outOfBoundsKill', true);
-    fire.width = 5;
-    fire.height = 5;
-
-
-    //Score Hillary
-    scorePlayer = level2.add.text(16, 16, 'Score: 0', {
+    //Add Scores
+    scorePlayer = level2.add.text(360, 16, 'Score: 0', {
         fontSize: '32px',
         fill: '#2196f3',
         background: '#000'
     });
 
-    //Score FBI
     scoreFbi = level2.add.text(660, 16, 'FBI: 0', {
         fontSize: '32px',
         fill: '#ff0000',
@@ -192,11 +176,14 @@ function create() {
 }
 
 
+    var x = level2.width 
 
 //Generate emails when out of the game
 function mailOut(mail) {
-    mail.reset(level2.world.randomX, 0);
-    mail.body.velocity.y = 800;
+    console.log('in mail out');
+    mail.reset(level2.world.randomX  , 0);
+    console.log('in mail out :' + level2.world.randomX);
+    mail.body.velocity.y = 1000;
     var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
     mail.body.velocity.x = num;
@@ -205,33 +192,23 @@ function mailOut(mail) {
 //Generate fbi car when out of the ground
 function fbiOut(fbiCar) {
     fbiCar.reset(0, level2.height - 243);
-    fbiCar.body.velocity.x = 550 + Math.random() * 700 + 300;
+    fbiCar.body.velocity.x = 550 + Math.random() * 900 + 500;
 }
 
 
 function createEmails(mail) {
-    var x = Math.random() * ((level2.world -350) + 350); 
-    var mail = emails.create(x, 0, 'email');
+    console.log('in create emails');
+    var mail = emails.create(level2.world.randomX, 0, 'email');
+    console.log('IN CREATE :  ' + x )
     mail.width = 50;
-    mail.height = 40;
     mail.checkWorldBounds = true;
     mail.events.onOutOfBounds.add(mailOut, this);
     //var numY = Math.random() */* 900*/ + 1000; // Get a number between 200 and 500;
-    mail.body.velocity.y = 800;
+    mail.body.velocity.y = 1000;
     var numX = Math.floor(Math.random() * 99) + 1;;
     numX *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
     mail.body.velocity.x = numX;
     setTimeout(createEmails, 500);
-}
-
-
-//End of game 
-function Win() {
-    var winEl = document.getElementById('win');
-    winEl.removeClass('none').addClass('active');
-}
-function Loose() {
-    $('#loose').removeClass('none').addClass('active');
 }
 
 
@@ -265,13 +242,22 @@ function update() {
     //Event on collision between items
     level2.physics.arcade.overlap(emails, player, collectMail, null, this);
     level2.physics.arcade.overlap(fbi, emails, fbiCollect, null, this);
+    level2.physics.arcade.overlap(blockLeft, emails, mailOnWall, null, this);
+    level2.physics.arcade.overlap(blockRight, emails, mailOnWall, null, this);
 
     //Hillary collect emails
     function collectMail(player, mail) {
         mail.kill();
-        // emailKilled.play();
+        emailKilled.play();
         score += 7;
         scorePlayer.text = 'Score: ' + score;
+    }
+
+
+    function mailOnWall(blockLeft, mail) {
+        console.log('in mail on wall')
+        mail.kill();
+        // mailOut();
     }
 
     //Hillary's move
@@ -284,20 +270,20 @@ function update() {
     //FBI collect 
     function fbiCollect(fbiCar, mail) {
         mail.kill();
-        // copsSound.play();
-        scoreEnemy += 12;
+        copsSound.play();
+        scoreEnemy += 11;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
     //Start game
     function startGame(mail) {
-        if (score >= 20) {
+        if (score >= 500) {
             emails.destroy();
             player.destroy();
             fbi.destroy();
             // level2.state.start('gameOver');
 
-        } else if (scoreEnemy >= 20) {
+        } else if (scoreEnemy >= 500) {
             emails.destroy();
             player.destroy();
             fbi.destroy();
@@ -314,33 +300,6 @@ function update() {
 
 }
 
-
-function createModals() {
-
-    reg.modal.createModal({
-        type: "modal1",
-        includeBackground: true,
-        modalCloseOnInput: true,
-        itemsArr: [{
-            type: "graphics",
-            graphicColor: "0xffffff",
-            graphicWidth: 300,
-            graphicHeight: 300,
-            graphicRadius: 40
-        }, {
-            type: "text",
-            content: "The white behind me\nis a [Phaser.Graphic]",
-            fontFamily: "Luckiest Guy",
-            fontSize: 22,
-            color: "0x1e1e1e",
-            offsetY: -50
-        }, ]
-    });
-};
-
-function showModal1() {
-    reg.modal.showModal("modal1");
-}
 
 function render() {
 }
