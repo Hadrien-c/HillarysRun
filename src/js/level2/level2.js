@@ -244,13 +244,13 @@ function update() {
     level2.physics.arcade.overlap(emails, player, collectMail, null, this);
     level2.physics.arcade.overlap(fbi, emails, fbiCollect, null, this);
     level2.physics.arcade.overlap(blockLeft, emails, mailOnWall, null, this);
-    // level2.physics.arcade.overlap(blockRight, emails, mailOnWall, null, this);
+    level2.physics.arcade.overlap(blockRight, emails, mailOnWall, null, this);
 
     //Hillary collect emails
     function collectMail(player, mail) {
         mail.kill();
         // emailKilled.play();
-        score += 7;
+        score += 9;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -262,9 +262,9 @@ function update() {
 
     //Hillary's move
     if (cursors.left.isDown) {
-        player.body.velocity.x = -800;
+        player.body.velocity.x = -900;
     } else if (cursors.right.isDown) {
-        player.body.velocity.x = 800;
+        player.body.velocity.x = 900;
     }
 
     function pause() {
@@ -289,7 +289,7 @@ function update() {
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         // copsSound.play();
-        scoreEnemy += 11;
+        scoreEnemy += 13;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
