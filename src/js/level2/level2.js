@@ -33,7 +33,7 @@ function preload() {
 // var player;
 var fire;
 var cursors;
-var fireButton;
+var space;
 var bulletTime = 0;
 var emails;
 var scorePlayer;
@@ -83,7 +83,6 @@ function create() {
 
     //Add ground
     var ground = level2.add.sprite(0, level2.height - 20, 'ground');
-    ground.height = 15;
     ground.width = level2.width;
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.ARCADE;
@@ -100,10 +99,9 @@ function create() {
     fbi = level2.add.group();
     fbi.enableBody = true;
     createFbi();
-    
+
     //Add ground 2
-    var ground2 = level2.add.sprite(0, level2.height - 400 , 'ground2');
-    ground2.height = 15;
+    var ground2 = level2.add.sprite(0, level2.height - 300, 'ground2');
     ground2.width = level2.width;
     ground2.enableBody = true;
     ground2.physicsBodyType = Phaser.Physics.ARCADE;
@@ -136,7 +134,7 @@ function create() {
     //Add blocks left
     blockLeft = level2.add.sprite(0, 0, 'blockLeft');
     blockLeft.height = level2.height;
-    blockLeft.width = 300;
+    blockLeft.width = 400;
     blockLeft.enableBody = true;
     blockLeft.name = 'blockLeft';
     level2.physics.enable(blockLeft, Phaser.Physics.ARCADE);
@@ -145,11 +143,11 @@ function create() {
     blockLeft.body.checkCollision.left = true;
     blockLeft.body.checkCollision.right = true;
     blockLeft.body.immovable = true;
-    
+
     //Add blocks Right
     blockRight = level2.add.sprite(window.innerWidth, 0, 'blockRight');
     blockRight.height = level2.height;
-    blockRight.width = 300;
+    blockRight.width = 400;
     blockRight.enableBody = true;
     blockRight.physicsBodyType = Phaser.Physics.ARCADE;
     blockRight.name = 'blockRight';
@@ -179,12 +177,22 @@ function create() {
         fill: '#ff0000',
         background: '#000'
     });
-console.log(player)
     // cursors = level2.input.keyboard.createCursorKeys();
 }
 
 
-    var x = level2.width 
+    //Add rectangle for pause
+    // var graphics = level2.add.graphics(100, 100);
+    // graphics.beginFill(0x000000)
+    // graphics.drawRect(level2.world.centerX - 360, level2.world.centerY - 250, 400, 400);
+
+    // var style = { 
+    //     font: "32px Arial", fill: "#fff", wordWrap: true, align: "right"
+    // };
+
+    // //Add text for pause
+    // pauseText = level2.add.text(580, 500, "Pause", style);
+
 
 //Generate emails when out of the game
 function mailOut(mail) {
@@ -197,22 +205,18 @@ function mailOut(mail) {
     mail.body.velocity.x = num;
 }
 
-//Generate fbi car when out of the ground
-function fbiOut(fbiCar) {
-    fbiCar.reset(0, level2.height - 243);
-    fbiCar.body.velocity.x = 550 + Math.random() * 900 + 500;
+    cursors = level2.input.keyboard.createCursorKeys();
+    space = level2.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
 
-
 function createEmails(mail) {
-    // console.log('in create emails');
-    var mail = emails.create(level2.world.randomX, 0, 'email');
     // console.log('IN CREATE :  ' + x )
+    var mail = emails.create(level2.world.randomX, 0, 'email');
     mail.width = 50;
     mail.checkWorldBounds = true;
     mail.events.onOutOfBounds.add(mailOut, this);
     //var numY = Math.random() */* 900*/ + 1000; // Get a number between 200 and 500;
-    mail.body.velocity.y = 1000;
+    mail.body.velocity.y = 1300;
     var numX = Math.floor(Math.random() * 99) + 1;;
     numX *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
     mail.body.velocity.x = numX;
@@ -220,22 +224,34 @@ function createEmails(mail) {
 }
 
 
-//Generate fbi when Hil fires on it
+//Generate emails when out of the game
+// function mailOut(mail) {
+//     mail.reset(level2.world.randomX, 0);
+//     mail.body.velocity.y = 1300;
+//     var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
+//     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
+//     mail.body.velocity.x = num;
+// }
+
 function createFbi() {
-    console.log('create fbi');
-    var fbiCar = fbi.create(random, level2.height - 243, 'fbi');
+    var fbiCar = fbi.create(random, level2.height - 115, 'fbi');
     fbiCar.width = 285;
     fbiCar.height = 100;
     fbiCar.body.velocity.x = 550 + Math.random() * 200;
-    fbiCar.physicsBodyType = Phaser.Physics.ARCADE;
     level2.physics.enable(fbiCar, Phaser.Physics.ARCADE);
     fbiCar.body.collideWorldBounds = false;
     fbiCar.checkWorldBounds = true;
     // fbiCar.body.bounce.setTo(1, 1);
     fbiCar.events.onOutOfBounds.add(fbiOut, this);
+    setTimeout(createFbi, 10000);
 }
 
-
+//Generate fbi car when out of the ground
+function fbiOut(fbiCar) {
+    fbiCar.kill();
+    fbiCar.reset(0, level2.height - 115);
+    fbiCar.body.velocity.x = 550 + Math.random() * 900 + 500;
+}
 
 
 
@@ -257,13 +273,12 @@ function update() {
     function collectMail(player, mail) {
         mail.kill();
         // emailKilled.play();
-        score += 7;
+        score += 9;
         scorePlayer.text = 'Score: ' + score;
     }
 
 
     function mailOnWall(blockLeft, mail) {
-        // console.log('in mail on wall')
         mail.kill();
         // mailOut();
     }
@@ -282,23 +297,41 @@ function update() {
         player.animations.stop('left');   
     }
 
+    function pause() {
+        level2.paused = true;
+        level2.lockRender = true;
+    }
+
+    function unpause() {
+        level2.paused = false;
+        level2.lockRender = false;
+    }
+    
+    space.onDown.add(function() {
+        if (level2.paused) {
+            unpause();
+        } else {
+            pause();
+        }
+    });
+
     //FBI collect 
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         // copsSound.play();
-        scoreEnemy += 11;
+        scoreEnemy += 13;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
     //Start game
     function startGame(mail) {
-        if (score >= 500) {
+        if (score >= 300) {
             emails.destroy();
             player.destroy();
             fbi.destroy();
             // level2.state.start('gameOver');
 
-        } else if (scoreEnemy >= 500) {
+        } else if (scoreEnemy >= 300) {
             emails.destroy();
             player.destroy();
             fbi.destroy();
