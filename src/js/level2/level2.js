@@ -15,12 +15,13 @@ function preload() {
     level2.load.image('bkg', 'dest/img/bkg_level2.jpg');
     level2.load.image('blockLeft', 'dest/img/block_left.jpg');
     level2.load.image('blockRight', 'dest/img/block_right.png');
-    level2.load.image('hil', 'dest/img/hil.png');
     level2.load.image('email', 'dest/img/mail.png');
     level2.load.image('fireBullet', 'dest/img/fire.png');
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('ground2', 'dest/img/ground2.png');
     level2.load.image('fbi', 'dest/img/fbi.png');
+
+    level2.load.spritesheet('hil', 'dest/img/hil_sprite.png', 155, 170);
 
     // level2.load.audio('fireSound', 'sounds/fireSound2.wav');
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
@@ -29,7 +30,7 @@ function preload() {
 }
 
 
-var player;
+// var player;
 var fire;
 var cursors;
 var fireButton;
@@ -50,6 +51,12 @@ var explo;
 var timer = 0;
 var total = 0;
 random = Math.random();
+var player = {
+  sprite: undefined,
+  direction: 'right',
+  doNothing: true
+}
+
 
 
 // -------------------------------------------------
@@ -110,7 +117,7 @@ function create() {
 
     //Add Hillary;
     player = level2.add.sprite(400, level2.height - 553, 'hil');
-    player.width = 194;
+    // player.width = 50;
     player.enableBody = true;
     player.name = 'player';
     player.physicsBodyType = Phaser.Physics.ARCADE;
@@ -118,7 +125,8 @@ function create() {
     player.body.collideWorldBounds = true;
     player.body.bounce.setTo(1, 1);
     level2.physics.arcade.enable(player);
-
+    // player.sprite.animations.add('left');
+    player.animations.add('left', [8,7,6,5,4,3,2,1,0], 10, true);
 
     //Add Emails
     emails = level2.add.group();
@@ -171,8 +179,8 @@ function create() {
         fill: '#ff0000',
         background: '#000'
     });
-
-    cursors = level2.input.keyboard.createCursorKeys();
+console.log(player)
+    // cursors = level2.input.keyboard.createCursorKeys();
 }
 
 
@@ -180,9 +188,9 @@ function create() {
 
 //Generate emails when out of the game
 function mailOut(mail) {
-    console.log('in mail out');
+    // console.log('in mail out');
     mail.reset(level2.world.randomX  , 0);
-    console.log('in mail out :' + level2.world.randomX);
+    // console.log('in mail out :' + level2.world.randomX);
     mail.body.velocity.y = 1000;
     var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
@@ -197,9 +205,9 @@ function fbiOut(fbiCar) {
 
 
 function createEmails(mail) {
-    console.log('in create emails');
+    // console.log('in create emails');
     var mail = emails.create(level2.world.randomX, 0, 'email');
-    console.log('IN CREATE :  ' + x )
+    // console.log('IN CREATE :  ' + x )
     mail.width = 50;
     mail.checkWorldBounds = true;
     mail.events.onOutOfBounds.add(mailOut, this);
@@ -248,29 +256,36 @@ function update() {
     //Hillary collect emails
     function collectMail(player, mail) {
         mail.kill();
-        emailKilled.play();
+        // emailKilled.play();
         score += 7;
         scorePlayer.text = 'Score: ' + score;
     }
 
 
     function mailOnWall(blockLeft, mail) {
-        console.log('in mail on wall')
+        // console.log('in mail on wall')
         mail.kill();
         // mailOut();
     }
 
+    cursors = level2.input.keyboard.createCursorKeys();
+    player.body.velocity.x = 0;
+
     //Hillary's move
     if (cursors.left.isDown) {
         player.body.velocity.x = -800;
+        player.animations.play('left');
     } else if (cursors.right.isDown) {
         player.body.velocity.x = 800;
+        player.animations.play('left');
+    } else {
+        player.animations.stop('left');   
     }
 
     //FBI collect 
     function fbiCollect(fbiCar, mail) {
         mail.kill();
-        copsSound.play();
+        // copsSound.play();
         scoreEnemy += 11;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
