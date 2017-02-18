@@ -21,9 +21,9 @@ function preload() {
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('ground2', 'dest/img/ground2.png');
     level2.load.image('fbi', 'dest/img/fbi.png');
-    // level2.load.image('hil', 'dest/img/hil.png');
+    level2.load.image('hil', 'dest/img/hil.png');
 
-    level2.load.spritesheet('hil', 'dest/img/hil_sprite.png', 400, 170);
+    // level2.load.spritesheet('hil', 'dest/img/hil_sprite.png', 400, 170);
 
     // level2.load.audio('fireSound', 'sounds/fireSound2.wav'); 
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
@@ -54,7 +54,7 @@ var timer = 0;
 var total = 0;
 var timer;
 var total = 0;
-var counter = 150;
+var counter = 80;
 var text;
 random = Math.random();
 // var player = {
@@ -166,11 +166,11 @@ function create() {
 
 
     // Add container for score and timer
-    content = new Phaser.Rectangle(0, 0, level2.width, 40);
+    // content = new Phaser.Rectangle(0, 0, level2.width, 40);
     
-    var graphics = level2.add.graphics(100, 100);
-    graphics.beginFill(0xff0000);
-    graphics.drawRect(-100, -100, level2.width, 30);
+    // var graphics = level2.add.graphics(100, 100);
+    // graphics.beginFill(0xff0000);
+    // graphics.drawRect(-100, -100, level2.width, 30);
     
 
     //Add sounds
@@ -181,13 +181,13 @@ function create() {
 
 
     //Add Scores
-    scorePlayer = level2.add.text(360, 16, 'Score: 0', {
+    scorePlayer = level2.add.text(level2.world.centerX - 400, 16, 'Score: 0', {
         fontSize: '32px',
         fill: '#2196f3',
         background: '#000'
     });
 
-    scoreFbi = level2.add.text(660, 16, 'FBI: 0', {
+    scoreFbi = level2.add.text(level2.world.centerX + 300, 16, 'FBI: 0', {
         fontSize: '32px',
         fill: '#ff0000',
         background: '#000'
@@ -195,8 +195,10 @@ function create() {
 
     
     //Timer
-    text = level2.add.text(level2.world.centerX, level2.world.centerY, 'Timer : 150', { 
-        font: "64px Arial", fill: "#ffffff", align: "center" 
+    text = level2.add.text(level2.world.centerX, 20, 'Timer : 80', { 
+        fontSize: "30px", 
+        fill: "#000000", 
+        align: "center" 
     });
     text.anchor.setTo(0.5, 0.5);
     level2.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
@@ -216,32 +218,24 @@ function updateCounter() {
 
     counter--;
 
-    text.setText('timer: ' + counter);
+    text.setText('Timer: ' + counter);
 
     if (counter == 0) {
     
         text.setText('timer: ' + '0');
         level2.lockRender = true;
-        // level2.destroy();
+
+        if (score > scoreEnemy) {
+            alert('Good');
+        } else {
+            alert('not good');
+        }
     }
 
 }
 
 
-//Generate emails when out of the game
-function mailOut(mail) {
-    // console.log('in mail out :' + level2.world.randomX);
-    mail.reset(level2.world.randomX, 0);
-    mail.body.velocity.y = 900;
-    var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
-    num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
-    mail.body.velocity.x = num;
-}
-
-// cursors = level2.input.keyboard.createCursorKeys();
-// space = level2.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-
+//Create emails
 function createEmails(mail) {
     // console.log('IN CREATE :  ' + x )
     var mail = emails.create(level2.world.randomX, 0, 'email');
@@ -256,6 +250,18 @@ function createEmails(mail) {
     setTimeout(createEmails, 200);
 }
 
+
+//Generate emails when out of the game
+function mailOut(mail) {
+    // console.log('in mail out :' + level2.world.randomX);
+    mail.reset(level2.world.randomX, 0);
+    mail.body.velocity.y = 900;
+    var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
+    num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
+    mail.body.velocity.x = num;
+}
+
+//Create FBI
 function createFbi() {
     var fbiCar = fbi.create(random, level2.height - 115, 'fbi');
     fbiCar.width = 285;
@@ -266,7 +272,7 @@ function createFbi() {
     fbiCar.checkWorldBounds = true;
     // fbiCar.body.bounce.setTo(1, 1);
     fbiCar.events.onOutOfBounds.add(fbiOut, this);
-    setTimeout(createFbi, 20000);
+    setTimeout(createFbi, 15000);
 }
 
 //Generate fbi car when out of the ground
@@ -296,7 +302,7 @@ function update() {
     function collectMail(player, mail) {
         mail.kill();
         // emailKilled.play();
-        score += 8;
+        score += 7;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -324,19 +330,9 @@ function update() {
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         // copsSound.play();
-        scoreEnemy += 13;
+        scoreEnemy += 14;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
-
-    //Start game
-    // function startGame(mail) {
-    //     if (scoreEnemy >= 300) {
-    //         emails.destroy();
-    //         player.destroy();
-    //         fbi.destroy();
-
-    //     }
-    // }
 
     // startGame();
     level2.physics.arcade.collide(blockLeft, player);
@@ -347,6 +343,4 @@ function update() {
 }
 
 
-function render() {
-    // level2.debug.text("Time until event: " + level2.time.events.duration.toFixed(0), 132, 132);
-}
+function render() {}
