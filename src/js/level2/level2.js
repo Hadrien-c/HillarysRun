@@ -3,7 +3,8 @@ console.log('in level 2 - play');
 var level2 = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, '', {
     preload: preload,
     create: create,
-    update: update
+    update: update,
+    render: render
 });
 
 
@@ -20,10 +21,11 @@ function preload() {
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('ground2', 'dest/img/ground2.png');
     level2.load.image('fbi', 'dest/img/fbi.png');
+    // level2.load.image('hil', 'dest/img/hil.png');
 
-    level2.load.spritesheet('hil', 'dest/img/hil_sprite.png', 155, 170);
+    level2.load.spritesheet('hil', 'dest/img/hil_sprite.png', 400, 170);
 
-    // level2.load.audio('fireSound', 'sounds/fireSound2.wav');
+    // level2.load.audio('fireSound', 'sounds/fireSound2.wav'); 
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
     level2.load.audio('copsSound', 'sounds/copsSound.wav');
     level2.load.audio('explo', 'sounds/explo.wav');
@@ -50,12 +52,16 @@ var emailKilled;
 var explo;
 var timer = 0;
 var total = 0;
+var timer;
+var total = 0;
+var counter = 150;
+var text;
 random = Math.random();
-var player = {
-  sprite: undefined,
-  direction: 'right',
-  doNothing: true
-}
+// var player = {
+//   sprite: undefined,
+//   direction: 'right',
+//   doNothing: true
+// }
 
 
 
@@ -114,17 +120,18 @@ function create() {
 
 
     //Add Hillary;
-    player = level2.add.sprite(400, level2.height - 553, 'hil');
-    // player.width = 50;
+    player = level2.add.sprite(400, level2.height - 430, 'hil',1);
+    // player.width = 130;
+    // player.height = 130;
     player.enableBody = true;
     player.name = 'player';
     player.physicsBodyType = Phaser.Physics.ARCADE;
     level2.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;
-    player.body.bounce.setTo(1, 1);
+    // player.body.bounce.setTo(1, 1);
     level2.physics.arcade.enable(player);
     // player.sprite.animations.add('left');
-    player.animations.add('left', [8,7,6,5,4,3,2,1,0], 10, true);
+    player.animations.add('left', [0,1,2,3,4,5,6,7,8,9], 10, true);
 
     //Add Emails
     emails = level2.add.group();
@@ -144,7 +151,7 @@ function create() {
     blockLeft.body.checkCollision.right = true;
     blockLeft.body.immovable = true;
 
-    //Add blocks Right
+    // //Add blocks Right
     blockRight = level2.add.sprite(window.innerWidth, 0, 'blockRight');
     blockRight.height = level2.height;
     blockRight.width = 400;
@@ -157,6 +164,14 @@ function create() {
     blockRight.body.checkCollision.right = true;
     blockRight.body.immovable = true;
 
+
+    // Add container for score and timer
+    content = new Phaser.Rectangle(0, 0, level2.width, 40);
+    
+    var graphics = level2.add.graphics(100, 100);
+    graphics.beginFill(0xff0000);
+    graphics.drawRect(-100, -100, level2.width, 30);
+    
 
     //Add sounds
     fireSound = level2.add.audio('fireSound');
@@ -177,37 +192,55 @@ function create() {
         fill: '#ff0000',
         background: '#000'
     });
-    // cursors = level2.input.keyboard.createCursorKeys();
+
+    
+    //Timer
+    text = level2.add.text(level2.world.centerX, level2.world.centerY, 'Timer : 150', { 
+        font: "64px Arial", fill: "#ffffff", align: "center" 
+    });
+    text.anchor.setTo(0.5, 0.5);
+    level2.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
+
+
+
+    cursors = level2.input.keyboard.createCursorKeys();
 }
 
 
-    //Add rectangle for pause
-    // var graphics = level2.add.graphics(100, 100);
-    // graphics.beginFill(0x000000)
-    // graphics.drawRect(level2.world.centerX - 360, level2.world.centerY - 250, 400, 400);
 
-    // var style = { 
-    //     font: "32px Arial", fill: "#fff", wordWrap: true, align: "right"
-    // };
+function killThemAll() {
+    level2.lockRender = true;   
+}
 
-    // //Add text for pause
-    // pauseText = level2.add.text(580, 500, "Pause", style);
+function updateCounter() {
+
+    counter--;
+
+    text.setText('timer: ' + counter);
+
+    if (counter == 0) {
+    
+        text.setText('timer: ' + '0');
+        level2.lockRender = true;
+        // level2.destroy();
+    }
+
+}
 
 
 //Generate emails when out of the game
 function mailOut(mail) {
-    // console.log('in mail out');
-    mail.reset(level2.world.randomX  , 0);
     // console.log('in mail out :' + level2.world.randomX);
-    mail.body.velocity.y = 1000;
+    mail.reset(level2.world.randomX, 0);
+    mail.body.velocity.y = 900;
     var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
     mail.body.velocity.x = num;
 }
 
-    cursors = level2.input.keyboard.createCursorKeys();
-    space = level2.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-}
+// cursors = level2.input.keyboard.createCursorKeys();
+// space = level2.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 
 function createEmails(mail) {
     // console.log('IN CREATE :  ' + x )
@@ -216,22 +249,12 @@ function createEmails(mail) {
     mail.checkWorldBounds = true;
     mail.events.onOutOfBounds.add(mailOut, this);
     //var numY = Math.random() */* 900*/ + 1000; // Get a number between 200 and 500;
-    mail.body.velocity.y = 1300;
+    mail.body.velocity.y = 1000;
     var numX = Math.floor(Math.random() * 99) + 1;;
     numX *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
     mail.body.velocity.x = numX;
-    setTimeout(createEmails, 500);
+    setTimeout(createEmails, 200);
 }
-
-
-//Generate emails when out of the game
-// function mailOut(mail) {
-//     mail.reset(level2.world.randomX, 0);
-//     mail.body.velocity.y = 1300;
-//     var num = Math.floor(Math.random() * 99) + 1; // Get a number between 1 and 99;
-//     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1; // Add minus sign in 50% of cases
-//     mail.body.velocity.x = num;
-// }
 
 function createFbi() {
     var fbiCar = fbi.create(random, level2.height - 115, 'fbi');
@@ -243,7 +266,7 @@ function createFbi() {
     fbiCar.checkWorldBounds = true;
     // fbiCar.body.bounce.setTo(1, 1);
     fbiCar.events.onOutOfBounds.add(fbiOut, this);
-    setTimeout(createFbi, 10000);
+    setTimeout(createFbi, 20000);
 }
 
 //Generate fbi car when out of the ground
@@ -273,7 +296,7 @@ function update() {
     function collectMail(player, mail) {
         mail.kill();
         // emailKilled.play();
-        score += 9;
+        score += 8;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -284,7 +307,7 @@ function update() {
     }
 
     cursors = level2.input.keyboard.createCursorKeys();
-    player.body.velocity.x = 0;
+    // player.body.velocity.x = 0;
 
     //Hillary's move
     if (cursors.left.isDown) {
@@ -294,26 +317,8 @@ function update() {
         player.body.velocity.x = 800;
         player.animations.play('left');
     } else {
-        player.animations.stop('left');   
+        // player.animations.stop('left');   
     }
-
-    function pause() {
-        level2.paused = true;
-        level2.lockRender = true;
-    }
-
-    function unpause() {
-        level2.paused = false;
-        level2.lockRender = false;
-    }
-    
-    space.onDown.add(function() {
-        if (level2.paused) {
-            unpause();
-        } else {
-            pause();
-        }
-    });
 
     //FBI collect 
     function fbiCollect(fbiCar, mail) {
@@ -324,23 +329,16 @@ function update() {
     }
 
     //Start game
-    function startGame(mail) {
-        if (score >= 300) {
-            emails.destroy();
-            player.destroy();
-            fbi.destroy();
-            // level2.state.start('gameOver');
+    // function startGame(mail) {
+    //     if (scoreEnemy >= 300) {
+    //         emails.destroy();
+    //         player.destroy();
+    //         fbi.destroy();
 
-        } else if (scoreEnemy >= 300) {
-            emails.destroy();
-            player.destroy();
-            fbi.destroy();
-            // level2.state.start('gameOver');
+    //     }
+    // }
 
-        }
-    }
-
-    startGame();
+    // startGame();
     level2.physics.arcade.collide(blockLeft, player);
     level2.physics.arcade.collide(blockRight, player);
     level2.physics.arcade.collide(blockLeft, emails);
@@ -350,4 +348,5 @@ function update() {
 
 
 function render() {
+    // level2.debug.text("Time until event: " + level2.time.events.duration.toFixed(0), 132, 132);
 }
