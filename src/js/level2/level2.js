@@ -21,9 +21,9 @@ function preload() {
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('ground2', 'dest/img/ground2.png');
     level2.load.image('fbi', 'dest/img/fbi.png');
-    level2.load.image('hil', 'dest/img/hil.png');
+    // level2.load.image('hil', 'dest/img/hil.png', 250, 280);
 
-    // level2.load.spritesheet('hil', 'dest/img/hil_sprite.png', 400, 170);
+    level2.load.spritesheet('hil', 'dest/img/sprite-Level2.png', 373, 265, 8);
 
     // level2.load.audio('fireSound', 'sounds/fireSound2.wav'); 
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
@@ -32,7 +32,7 @@ function preload() {
 }
 
 
-// var player;
+var player;
 var fire;
 var cursors;
 var space;
@@ -54,14 +54,9 @@ var timer = 0;
 var total = 0;
 var timer;
 var total = 0;
-var counter = 80;
+var counter = 5;
 var text;
 random = Math.random();
-// var player = {
-//   sprite: undefined,
-//   direction: 'right',
-//   doNothing: true
-// }
 
 
 
@@ -120,23 +115,23 @@ function create() {
 
 
     //Add Hillary;
-    player = level2.add.sprite(400, level2.height - 430, 'hil',1);
-    // player.width = 130;
-    // player.height = 130;
+    player = level2.add.sprite(380, level2.height - 430, 'hil', 1);
+    player.frame = 0;
     player.enableBody = true;
-    player.name = 'player';
+    player.scale.setTo(0.5);
     player.physicsBodyType = Phaser.Physics.ARCADE;
     level2.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;
-    // player.body.bounce.setTo(1, 1);
     level2.physics.arcade.enable(player);
-    // player.sprite.animations.add('left');
-    player.animations.add('left', [0,1,2,3,4,5,6,7,8,9], 10, true);
+    // player.animations.add('left', [0,1,2,3,4,5,6,7,8], 5, true);
+    player.animations.add("left");
+
+
 
     //Add Emails
     emails = level2.add.group();
     emails.enableBody = true;
-    createEmails();
+    // createEmails();
 
     //Add blocks left
     blockLeft = level2.add.sprite(0, 0, 'blockLeft');
@@ -167,11 +162,11 @@ function create() {
 
     // Add container for score and timer
     // content = new Phaser.Rectangle(0, 0, level2.width, 40);
-    
+
     // var graphics = level2.add.graphics(100, 100);
     // graphics.beginFill(0xff0000);
     // graphics.drawRect(-100, -100, level2.width, 30);
-    
+
 
     //Add sounds
     fireSound = level2.add.audio('fireSound');
@@ -193,12 +188,12 @@ function create() {
         background: '#000'
     });
 
-    
+
     //Timer
-    text = level2.add.text(level2.world.centerX, 20, 'Timer : 80', { 
-        fontSize: "30px", 
-        fill: "#000000", 
-        align: "center" 
+    text = level2.add.text(level2.world.centerX, 20, 'Timer : 5', {
+        fontSize: "30px",
+        fill: "#000000",
+        align: "center"
     });
     text.anchor.setTo(0.5, 0.5);
     level2.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
@@ -211,33 +206,35 @@ function create() {
 
 
 function killThemAll() {
-    level2.lockRender = true;   
+    level2.lockRender = true;
 }
 
 function updateCounter() {
-
+    
     counter--;
-
     text.setText('Timer: ' + counter);
 
     if (counter == 0) {
-    
-        text.setText('timer: ' + '0');
-        level2.lockRender = true;
-
-        if (score > scoreEnemy) {
-            alert('Good');
-        } else {
-            alert('not good');
-        }
+        counter = 0;
+        text.destroy();
+        // endOfTimer();
     }
 
+}
+
+function endOfTimer() {
+    level2.lockRender = true;
+
+    // if (score > scoreEnemy) {
+    //     window.location.href = "https://localhost:3000/end.html";
+    // } else {
+    //     window.location.href = "https://localhost:3000/end.html";
+    // }
 }
 
 
 //Create emails
 function createEmails(mail) {
-    // console.log('IN CREATE :  ' + x )
     var mail = emails.create(level2.world.randomX, 0, 'email');
     mail.width = 50;
     mail.checkWorldBounds = true;
@@ -318,12 +315,15 @@ function update() {
     //Hillary's move
     if (cursors.left.isDown) {
         player.body.velocity.x = -800;
-        player.animations.play('left');
+        player.animations.play('left', 5, true);
+
     } else if (cursors.right.isDown) {
         player.body.velocity.x = 800;
-        player.animations.play('left');
+        player.animations.play('left', 5, true);
+
     } else {
-        // player.animations.stop('left');   
+        // player.animations.stop('left');
+        // player.frame = 0;
     }
 
     //FBI collect 
