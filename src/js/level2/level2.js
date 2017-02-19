@@ -23,7 +23,8 @@ function preload() {
     level2.load.image('fbi', 'dest/img/fbi.png');
     // level2.load.image('hil', 'dest/img/hil.png', 250, 280);
 
-    level2.load.spritesheet('hil', 'dest/img/sprite-Level2.png', 373, 265, 8);
+    // level2.load.spritesheet('hil', 'dest/img/sprite-Level2.png', 373, 265, 8);
+    level2.load.atlasJSONHash('dest/sprites/hil_spritesheet', 'dest/sprites/hil_spritesheet.png', 'dest/sprites/hil_spritesheet.json');
 
     // level2.load.audio('fireSound', 'sounds/fireSound2.wav'); 
     level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
@@ -115,7 +116,18 @@ function create() {
 
 
     //Add Hillary;
-    player = level2.add.sprite(380, level2.height - 430, 'hil', 1);
+
+    // sprite
+    player = level2.add.sprite(0, 180, 'hil_spritesheet', '1');
+    player.scale.setTo(0.5,0.5);
+
+    // animation
+    player.animations.add('left', Phaser.Animation.generateFrameNames('/', 1, 9, '', 4), 10, true, false);
+    // player.animations.play('left');
+
+
+
+    // player = level2.add.sprite(380, level2.height - 430, 'hil_spritesheet', 1);
     player.frame = 0;
     player.enableBody = true;
     player.scale.setTo(0.5);
