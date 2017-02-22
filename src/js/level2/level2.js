@@ -100,7 +100,7 @@ function create() {
     //Add fbi
     fbi = level2.add.group();
     fbi.enableBody = true;
-    createFbi();
+    // createFbi();
 
     //Add ground 2
     var ground2 = level2.add.sprite(0, level2.height - 300, 'ground2');
@@ -126,6 +126,8 @@ function create() {
     level2.physics.arcade.enable(player);
     player.animations.add('left', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
     player.animations.add('right', [9, 10, 11, 12, 13, 14, 15, 16], 10, true);
+    player.body.setSize(230, 110, 110, 100); 
+
 
     //Add Trump for Game Over
     trump = level2.add.sprite(level2.world.centerX,level2.world.centerY, 'trump_sprite', 1);
@@ -149,7 +151,7 @@ function create() {
     //Add Emails
     emails = level2.add.group();
     emails.enableBody = true;
-    // setTimeout(createEmails, 2500);
+    setTimeout(createEmails, 2500);
 
     //Add blocks left
     blockLeft = level2.add.sprite(-100, 0, 'blockLeft');
@@ -259,7 +261,7 @@ function endOfTimer() {
 }
 
 function win() {
-    window.location.href = "index.html";
+    window.location.href = "story3.html";
 }
 
 function loose() {
@@ -273,7 +275,7 @@ function createEmails(mail) {
     mail.checkWorldBounds = true;
     mail.events.onOutOfBounds.add(mailOut, this);
     //var numY = Math.random() */* 900*/ + 1000;
-    mail.body.velocity.y = 1000;
+    mail.body.velocity.y = 700;
     var numX = Math.floor(Math.random() * 99) + 1;;
     numX *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
     mail.body.velocity.x = numX;
@@ -284,7 +286,7 @@ function createEmails(mail) {
 //Generate emails when out of the game
 function mailOut(mail) {
     mail.reset(level2.world.randomX, 0);
-    mail.body.velocity.y = 900;
+    mail.body.velocity.y = 700;
     var num = Math.floor(Math.random() * 99) + 1;
     num *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
     mail.body.velocity.x = num;
@@ -330,8 +332,16 @@ function update() {
     function collectMail(player, mail) {
         mail.kill();
         emailKilled.play();
-        score += 8;
+        score += 7;
         scorePlayer.text = 'Score: ' + score;
+    }
+
+    //FBI collect 
+    function fbiCollect(fbiCar, mail) {
+        mail.kill();
+        copsSound.play();
+        scoreEnemy += 13;
+        scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
 
@@ -341,11 +351,11 @@ function update() {
 
     //Hillary's move
     if (cursors.left.isDown) {
-        player.body.velocity.x = -800;
+        player.body.velocity.x = -700;
         player.animations.play('left');
 
     } else if (cursors.right.isDown) {
-        player.body.velocity.x = 800;
+        player.body.velocity.x = 700;
         player.animations.play('right');
 
     }
@@ -370,14 +380,6 @@ function update() {
     } else if (mute.isDown && musicIsPlaying === false) {
         console.log(musicIsPlaying)
         playMusic();
-    }
-
-    //FBI collect 
-    function fbiCollect(fbiCar, mail) {
-        mail.kill();
-        copsSound.play();
-        scoreEnemy += 16;
-        scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
     // startGame();

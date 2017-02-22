@@ -2,6 +2,11 @@ $blue: #5d5da6;
 $blueHover: #55559a;
 $red: #fa5d5d;
 $grey: #f9f9f9;
+$mtFont: 'Montserrat',
+sans-serif;
+$osFont: 'Open Sans',
+sans-serif;
+;
 html,
 body,
 .wrapper,
@@ -20,6 +25,7 @@ body,
 
 body {
     overflow: hidden;
+    font-family: $mtFont;
 }
 
 button {
@@ -104,6 +110,9 @@ a {
                     background-repeat: no-repeat;
                     background-size: 100% 100%;
                     background-position: calc(100% + 450px) 0;
+                    p {
+                        font-family: $osFont;
+                    }
                 }
             }
             &_txtContent {
@@ -131,6 +140,7 @@ a {
                 a {
                     background: $red;
                     box-shadow: 0px 21px 61px 8px rgba(250, 93, 93, .35);
+                    letter-spacing: 5px;
                     &:hover {
                         background: #ef5a5a;
                         box-shadow: 0px 21px 61px 8px rgba(226, 83, 83, .35);
@@ -283,7 +293,6 @@ a {
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
-        padding-top: 5em;
         margin-left: 10%;
         h1 {
             font-size: 71px;
@@ -296,16 +305,34 @@ a {
                 color: $blue;
             }
         }
+        h2 {
+            color: $blue;
+            font-weight: bold;
+            // border-bottom: 3px solid $blue;
+        }
         p {
             color: $blue;
             font-weight: 300;
             width: 90%;
+            line-height: 28px;
+            margin: 0.5em 0;
+            img {
+                width: 60px;
+                margin: 0 15px;
+                &.spacebar {
+                    width: 120px;
+                }
+                &.mute {
+                    margin-bottom: -10px;
+                    width: 40px;
+                }
+            }
         }
         .tryAgain {
             background: $red;
             position: relative;
             box-shadow: 0px 21px 61px 8px rgba(250, 93, 93, .35);
-            margin-top: 3em;
+            margin-top: 2em;
             &:hover {
                 background: #ef5a5a;
                 box-shadow: 0px 21px 61px 8px rgba(226, 83, 83, .35);
