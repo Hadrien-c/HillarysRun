@@ -1,6 +1,7 @@
 new WOW().init();
 
-$('#cup').click(function() {
-	console.log('tototo')
+$('.cupContent').click(function() {
+	$('.cupContent').toggleClass('cross');
 	$('.highscore').toggleClass('isActive');
 })
+

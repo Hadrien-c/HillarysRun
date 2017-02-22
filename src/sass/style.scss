@@ -90,11 +90,24 @@ a {
                 }
                 .cupContent {
                     position: absolute;
-                    bottom: 15px;
-                    left: 10%;
-                    #cup {
-                        width: 50px;
-                        cursor: pointer;
+                    top: 5%;
+                    left: 5%;
+                    background: url('../img/cup.png');
+                    background-size: 25px 25px;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    border: 2px solid #fff;
+                    border-radius: 50%;
+                    width: 55px;
+                    height: 55px;
+                    cursor: pointer;
+                    transition: .3s;
+                    &.cross {
+                        background: url('../img/delete.png');
+                        background-size: 25px 25px;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        transition: .3s;
                     }
                 }
             }
@@ -155,14 +168,6 @@ a {
     }
 }
 
-@keyframes slide {
-    from {
-        background-position: 0 0;
-    }
-    to {
-        background-position: -1366px 0;
-    }
-}
 
 
 /* ------------------------------------------------
@@ -178,7 +183,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     .trump {
-        background-image: url("../img/trump_gameover.png");
+        background-image: url("../img/trumpClose.png");
+        animation: trumpAnim 1s linear;
         background-size: 100% auto;
         width: 30%;
         height: 100%;
@@ -227,6 +233,7 @@ a {
                 margin-right: 2em;
                 outline: none;
                 color: #81bbdb;
+                background: transparent;
                 &::-webkit-input-placeholder {
                     color: #81bbdb;
                 }
@@ -308,7 +315,6 @@ a {
         h2 {
             color: $blue;
             font-weight: bold;
-            // border-bottom: 3px solid $blue;
         }
         p {
             color: $blue;
@@ -338,6 +344,43 @@ a {
                 box-shadow: 0px 21px 61px 8px rgba(226, 83, 83, .35);
             }
         }
+    }
+}
+
+
+
+/* ----------------------------------------------
+ ------------------------------------------------
+ -------------------  Keyframes  ----------------
+ ------------------------------------------------
+ ------------------------------------------------ */
+
+
+@keyframes trumpAnim {
+  0% {
+    background-image: url('../img/trumpOpen.png');
+  }
+  25% {
+    background-image: url('../img/trumpClose.png');
+  }
+  50% {
+    background-image: url('../img/trumpOpen.png'); 
+  }
+  75% {
+    background-image: url('../img/trumpClose.png');
+  }
+  100% {
+    background-image: url('../img/trumpOpen.png'); 
+  }
+}
+
+
+@keyframes slide {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -1366px 0;
     }
 }
 

@@ -100,7 +100,7 @@ function create() {
     //Add fbi
     fbi = level2.add.group();
     fbi.enableBody = true;
-    // createFbi();
+    createFbi();
 
     //Add ground 2
     var ground2 = level2.add.sprite(0, level2.height - 300, 'ground2');
@@ -124,7 +124,7 @@ function create() {
     level2.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;
     level2.physics.arcade.enable(player);
-    player.animations.add('left', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
+    player.animations.add('left', [8, 7, 6, 5, 4, 3, 2, 1, 0], 10, true);
     player.animations.add('right', [9, 10, 11, 12, 13, 14, 15, 16], 10, true);
     player.body.setSize(230, 110, 110, 100); 
 
@@ -196,14 +196,14 @@ function create() {
 
 
     //Add Scores
-    scorePlayer = level2.add.text(level2.world.centerX - 380, 40, 'Score: 0', {
-        fontSize: '25px',
+    scorePlayer = level2.add.text(level2.world.centerX - 380, 45, 'Score: 0', {
+        fontSize: '20px',
         fill: '#3c68f7',
         background: '#000'
     });
 
-    scoreFbi = level2.add.text(level2.world.centerX + 220, 40, 'FBI: 0', {
-        fontSize: '25px',
+    scoreFbi = level2.add.text(level2.world.centerX + 175, 45, 'FBI: 0', {
+        fontSize: '20px',
         fill: '#f43d3d',
         background: '#000'
     });
@@ -240,8 +240,10 @@ function updateCounter() {
                 align: 'center'
             });
             text.destroy();
-            setTimeout(endOfTimer, 500);
-            setTimeout(win, 2000);
+            // setTimeout(endOfTimer, 500);
+            endOfTimer();
+            // setTimeout(win, 2000);
+            win();
         } else if (scoreEnemy > score) {
             goText = level2.add.text(level2.world.centerX, level2.world.centerY, 'Game Over ', {
                 font: '40px Arial',
@@ -261,7 +263,7 @@ function endOfTimer() {
 }
 
 function win() {
-    window.location.href = "story3.html";
+    window.location.href = "story3.html?score="+ score;
 }
 
 function loose() {
@@ -332,7 +334,7 @@ function update() {
     function collectMail(player, mail) {
         mail.kill();
         emailKilled.play();
-        score += 7;
+        score += 8;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -340,24 +342,23 @@ function update() {
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         copsSound.play();
-        scoreEnemy += 13;
+        scoreEnemy += 11;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
-
+    //Kill mail if touch wall
     function mailOnWall(blockLeft, mail) {
         mail.kill();
     }
 
     //Hillary's move
     if (cursors.left.isDown) {
-        player.body.velocity.x = -700;
+        player.body.velocity.x = -750;
         player.animations.play('left');
 
     } else if (cursors.right.isDown) {
-        player.body.velocity.x = 700;
+        player.body.velocity.x = 750;
         player.animations.play('right');
-
     }
 
     //Music
@@ -366,7 +367,7 @@ function update() {
         music.stop();
     }
 
-
+    //Play music
     function playMusic() {
         musicIsPlaying = true;
         music.play();
