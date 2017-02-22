@@ -57,6 +57,7 @@ random = Math.random();
 var musicIsPlaying = true;
 var goText;
 var trump;
+var box;
 
 
 
@@ -148,7 +149,7 @@ function create() {
     //Add Emails
     emails = level2.add.group();
     emails.enableBody = true;
-    setTimeout(createEmails, 2500);
+    // setTimeout(createEmails, 2500);
 
     //Add blocks left
     blockLeft = level2.add.sprite(-100, 0, 'blockLeft');
@@ -186,30 +187,33 @@ function create() {
 
 
     //Add score box 
-    var box = level2.add.RoundedRectangle(level2.world.centerX, 30, 300, 50, 30);
+    //var box = level2.add.RoundedRectangle(level2.world.centerX, 30, 300, 50, 30);
+    box = level2.add.graphics(level2.world.centerX - 400, 30);
+    box.beginFill(0xFFFFFF, 1);
+    box.drawRoundedRect(0, 0, 740, 50, 30);
 
 
     //Add Scores
-    scorePlayer = level2.add.text(level2.world.centerX - 400, 16, 'Score: 0', {
-        fontSize: '32px',
-        fill: '#2196f3',
+    scorePlayer = level2.add.text(level2.world.centerX - 380, 40, 'Score: 0', {
+        fontSize: '25px',
+        fill: '#3c68f7',
         background: '#000'
     });
 
-    scoreFbi = level2.add.text(level2.world.centerX + 300, 16, 'FBI: 0', {
-        fontSize: '32px',
-        fill: '#ff0000',
+    scoreFbi = level2.add.text(level2.world.centerX + 220, 40, 'FBI: 0', {
+        fontSize: '25px',
+        fill: '#f43d3d',
         background: '#000'
     });
 
 
     //Timer
-    text = level2.add.text(level2.world.centerX, 20, 'Timer : 70', {
-        fontSize: "30px",
-        fill: "#000000",
+    text = level2.add.text(level2.world.centerX - 80, 40, 'Timer : 70', {
+        fontSize: "25px",
+        fill: "#9296e7",
         align: "center"
     });
-    text.anchor.setTo(0.5, 0.5);
+    // text.anchor.setTo(0.5, 0.5);
     level2.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
 
     //Add music 
