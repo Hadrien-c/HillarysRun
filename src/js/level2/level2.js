@@ -342,7 +342,7 @@ function update() {
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         copsSound.play();
-        scoreEnemy += 11;
+        scoreEnemy += 12;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 
