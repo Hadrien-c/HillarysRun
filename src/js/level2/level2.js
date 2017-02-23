@@ -49,7 +49,7 @@ var emailKilled;
 var mainSong;
 var timer;
 var total = 0;
-var counter = 8;
+var counter = 70;
 var text;
 var mute;
 var overlay;

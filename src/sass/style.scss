@@ -281,7 +281,8 @@ a {
     }
 }
 
-.story {
+.story,
+.terms {
     background: url('../img/bg_story.png');
     background-size: cover;
     display: flex;
@@ -354,6 +355,14 @@ a {
                 box-shadow: 0px 21px 61px 8px rgba(226, 83, 83, .35);
             }
         }
+    }
+}
+
+
+#terms {
+    h1 {
+        color: $blue;
+        font-size: 42px;
     }
 }
 
