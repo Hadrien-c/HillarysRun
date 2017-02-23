@@ -1,5 +1,3 @@
-console.log('in level 2 - play');
-
 var level2 = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, '', {
     preload: preload,
     create: create,
@@ -20,6 +18,7 @@ function preload() {
     level2.load.image('ground', 'dest/img/ground.png');
     level2.load.image('ground2', 'dest/img/ground2.png');
     level2.load.image('fbi', 'dest/img/fbi.png');
+    level2.load.image('overlay', 'dest/img/overlay.png');
     // level2.load.image('hil', 'dest/img/hil.png', 250, 280);
 
     level2.load.spritesheet('hil', 'dest/img/sprite_complete.png', 353, 295);
@@ -50,12 +49,13 @@ var emailKilled;
 var mainSong;
 var timer;
 var total = 0;
-var counter = 70;
+var counter = 8;
 var text;
 var mute;
+var overlay;
 random = Math.random();
 var musicIsPlaying = true;
-var goText;
+var textEnd;
 var trump;
 var box;
 
@@ -137,15 +137,15 @@ function create() {
 
 
     //Add game over text
-    goText = level2.add.text(level2.world.centerX, level2.world.centerY - 200, ' ', {
+    textEnd = level2.add.text(level2.world.centerX, level2.world.centerY - 200, ' ', {
         font: '40px Arial',
         fill: '#D80000',
         align: 'center'
     });
-    goText.anchor.setTo(0.5, 0.5);
-    goText.font = 'Arial';
-    goText.visible = false;
-    goText.fixedToCamera = true;
+    textEnd.anchor.setTo(0.5, 0.5);
+    textEnd.font = 'Arial';
+    textEnd.visible = false;
+    textEnd.fixedToCamera = true;
 
 
     //Add Emails
@@ -189,7 +189,6 @@ function create() {
 
 
     //Add score box 
-    //var box = level2.add.RoundedRectangle(level2.world.centerX, 30, 300, 50, 30);
     box = level2.add.graphics(level2.world.centerX - 400, 30);
     box.beginFill(0xFFFFFF, 1);
     box.drawRoundedRect(0, 0, 740, 50, 30);
@@ -218,6 +217,12 @@ function create() {
     // text.anchor.setTo(0.5, 0.5);
     level2.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
 
+    //Add overlay
+    overlay = level2.add.sprite(0, 0, 'overlay');
+    overlay.width = level2.width;
+    overlay.height = level2.height;
+    overlay.visible = false;
+
     //Add music 
     music = level2.add.audio('mainSong');
     music.play();
@@ -234,25 +239,32 @@ function updateCounter() {
     if (counter == 0) {
         if (score > scoreEnemy) {
 
-            goText = level2.add.text(level2.world.centerX, level2.world.centerY, 'Congratulation ', {
-                font: '40px Arial',
-                fill: '#002849',
+            overlay.visible = true;
+
+            textEnd = level2.add.text(level2.world.centerX - 250, level2.world.centerY, 'C O N G R A T U L A T I O N ', {
+                font: '48px Montserrat',
+                fill: '#fff',
                 align: 'center'
             });
+            textEnd.fontWeight = 'bold';
             text.destroy();
-            // setTimeout(endOfTimer, 500);
-            endOfTimer();
-            // setTimeout(win, 2000);
-            win();
+            setTimeout(endOfTimer, 500);
+            setTimeout(win, 2500);
+            // win();
         } else if (scoreEnemy > score) {
-            goText = level2.add.text(level2.world.centerX, level2.world.centerY, 'Game Over ', {
-                font: '40px Arial',
-                fill: '#ff0022',
+            
+            overlay.visible = true;
+            
+            textEnd = level2.add.text(level2.world.centerX - 200, level2.world.centerY, 'G A M E   O V E R ', {
+                font: '48px Montserrat',
+                fill: '#fff',
                 align: 'center'
             });
+            textEnd.fontWeight = 'bold';
             text.destroy();
             setTimeout(endOfTimer, 500);
             setTimeout(loose, 2000);
+
         }
     }
 }
@@ -375,11 +387,11 @@ function update() {
 
     //Play / Stop music
     if (mute.isDown && musicIsPlaying === true) {
-        console.log(musicIsPlaying)
+    
         stopMusic();
 
     } else if (mute.isDown && musicIsPlaying === false) {
-        console.log(musicIsPlaying)
+    
         playMusic();
     }
 

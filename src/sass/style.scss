@@ -2,21 +2,16 @@ $blue: #5d5da6;
 $blueHover: #55559a;
 $red: #fa5d5d;
 $grey: #f9f9f9;
-$mtFont: 'Montserrat',
-sans-serif;
-$osFont: 'Open Sans',
-sans-serif;
-;
+$mtFont: 'Montserrat', sans-serif;
+$osFont: 'Open Sans', sans-serif;
+
 html,
 body,
 .wrapper,
 .home,
-.gameOver,
-.story {
+.gameOver{
     width: 100%;
     height: 100%;
-    padding: 0;
-    margin: 0;
 }
 
 * {
@@ -24,8 +19,12 @@ body,
 }
 
 body {
-    overflow: hidden;
+    overflow-x: hidden;
     font-family: $mtFont;
+}
+body, html{
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 button {
@@ -64,9 +63,9 @@ a {
         &_block {
             width: 50%;
             &.left {
-                background-image: url('../img/bkg_landing.jpg');
-                background-size: auto 100vh;
-                animation: slide 25s linear infinite;
+                background-image: url('../img/bkg_landing.png');
+                background-size: cover;
+                animation: slide 30s linear infinite;
                 .highscore {
                     visibility: hidden;
                     opacity: 0;
@@ -82,7 +81,7 @@ a {
                         justify-content: space-between;
                         align-items: baseline;
                         padding-bottom: 10px;
-                        border-bottom: 1px solid #fff;
+                        border-bottom: 1px solid rgba(255,255,255,.5);
                         color: #fff;
                         width: 350px;
                         margin: .8em auto;
@@ -121,10 +120,12 @@ a {
                     height: 100%;
                     background-image: url('../img/trump_home.png');
                     background-repeat: no-repeat;
-                    background-size: 100% 100%;
-                    background-position: calc(100% + 450px) 0;
+                    background-size: 100% auto;
+                    background-position: 400px 0;
                     p {
                         font-family: $osFont;
+                        line-height: 28px;
+                        width: 85%;
                     }
                 }
             }
@@ -135,7 +136,7 @@ a {
                 width: 75%;
                 align-items: flex-start;
                 h1 {
-                    font-size: 28px;
+                    font-size : 47px;
                     font-weight: 500;
                     text-transform: uppercase;
                     color: $red;
@@ -196,14 +197,13 @@ a {
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: flex-start;
-        padding-top: 5em;
+        // padding-top: 5em;
         h1 {
             font-size: 71px;
             color: $red;
             letter-spacing: 5px;
-            margin-bottom: 0.5em;
             font-weight: bold;
             text-transform: uppercase;
             span {
@@ -234,6 +234,7 @@ a {
                 outline: none;
                 color: #81bbdb;
                 background: transparent;
+                font-family: $mtFont;
                 &::-webkit-input-placeholder {
                     color: #81bbdb;
                 }
@@ -285,6 +286,12 @@ a {
     background-size: cover;
     display: flex;
     flex-direction: row;
+    height: 100%;
+    &.story3 {
+        .content {
+            margin-top: -2em;
+        }
+    }
     .hil {
         background-image: url("../img/hil_story.png");
         background-size: 100% auto;
@@ -298,9 +305,12 @@ a {
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: flex-start;
         margin-left: 10%;
+        @media screen and (max-height: 775px) {
+            justify-content: flex-start;
+        }
         h1 {
             font-size: 71px;
             color: $red;
